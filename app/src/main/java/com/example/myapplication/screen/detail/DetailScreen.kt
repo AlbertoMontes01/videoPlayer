@@ -5,31 +5,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.screen.player.VideoPlayer
 
 @Composable
-fun DetailScreen(
-    videoUrl: String
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+fun DetailScreen(videoUrl: String) {
+    Column(modifier = Modifier.fillMaxSize()) {
 
-        // 🔹 Aquí irá el VIDEO (más adelante)
-        Box(
+        VideoPlayer(
+            videoUrl = videoUrl,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
-        ) {
-            Text(text = "Video placeholder")
-        }
+                .aspectRatio(16 / 9f)
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔹 Texto descriptivo
         Text(
-            text = "Descripción del video\n\nURL:\n$videoUrl"
+            text = "Descripción del video\n\n$videoUrl",
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
