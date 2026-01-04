@@ -15,12 +15,28 @@ class PlayerViewModel @Inject constructor(
 
     val player: ExoPlayer = ExoPlayer.Builder(context).build()
 
+    private var lastPosition: Long = 0L
+    private var currentUrl: String? = null
+
     fun setMedia(url: String) {
+        if (currentUrl == url && player.mediaItemCount > 0) return
+
+        currentUrl = url
         player.setMediaItem(MediaItem.fromUri(url))
         player.prepare()
+        player.playWhenReady = true
+    }
+
+    fun savePosition() {
+        lastPosition = player.currentPosition
+    }
+
+    fun restorePosition() {
+        player.seekTo(lastPosition)
     }
 
     override fun onCleared() {
         player.release()
     }
 }
+

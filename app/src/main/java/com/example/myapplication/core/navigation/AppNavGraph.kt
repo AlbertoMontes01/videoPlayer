@@ -20,7 +20,7 @@ fun AppNavGraph() {
         startDestination = Routes.CATALOG
     ) {
 
-        // 1️⃣ CATALOG
+        // CATALOG
         composable(Routes.CATALOG) {
             CatalogScreen(
                 onVideoClick = { videoUrl ->
@@ -31,7 +31,7 @@ fun AppNavGraph() {
             )
         }
 
-        // 2️⃣ DETAIL
+        // DETAIL
         composable(
             route = "${Routes.DETAIL}/{videoUrl}",
             arguments = listOf(
@@ -47,7 +47,7 @@ fun AppNavGraph() {
             )
         }
 
-        // 3️⃣ FULLSCREEN
+        // FULLSCREEN
         composable(
             route = "${Routes.FULLSCREEN}/{videoUrl}",
             arguments = listOf(
