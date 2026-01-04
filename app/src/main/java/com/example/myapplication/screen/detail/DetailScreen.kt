@@ -1,28 +1,52 @@
 package com.example.myapplication.screen.detail
 
+import android.net.Uri
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.myapplication.screen.player.PlayerViewModel
 import com.example.myapplication.screen.player.VideoPlayer
 
 @Composable
-fun DetailScreen(videoUrl: String) {
+fun DetailScreen(
+    videoUrl: String,
+    navController: NavController,
+    viewModel: PlayerViewModel = hiltViewModel()
+) {
+    LaunchedEffect(videoUrl) {
+        viewModel.setMedia(videoUrl)
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
 
         VideoPlayer(
-            videoUrl = videoUrl,
+            player = viewModel.player,
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(16 / 9f)
+                .height(220.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        IconButton(
+            onClick = {
+                navController.navigate("fullscreen/${Uri.encode(videoUrl)}")
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Fullscreen,
+                contentDescription = "Fullscreen"
+            )
+        }
 
         Text(
-            text = "Descripción del video\n\n$videoUrl",
+            text = "Descripción del video",
             modifier = Modifier.padding(16.dp)
         )
     }
 }
+

@@ -17,6 +17,7 @@ navigationCompose = "2.8.5"
 junit = "4.13.2"
 espressoCore = "3.6.1"
 junitExt = "1.2.1"
+material3 = "1.4.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -43,3 +44,4 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }

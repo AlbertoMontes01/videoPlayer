@@ -11,38 +11,14 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun VideoPlayer(
-    videoUrl: String,
-    modifier: Modifier = Modifier,
-    playWhenReady: Boolean = true
+    player: ExoPlayer,
+    modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
-    // Crear ExoPlayer una sola vez
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            setMediaItem(MediaItem.fromUri(videoUrl))
-            prepare()
-            this.playWhenReady = playWhenReady
-        }
-    }
-
-    // Liberar correctamente (CRÍTICO)
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
-
     AndroidView(
         modifier = modifier,
-        factory = {
-            PlayerView(it).apply {
-                player = exoPlayer
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                useController = true
+        factory = { context ->
+            PlayerView(context).apply {
+                this.player = player
             }
         }
     )
