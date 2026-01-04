@@ -4,22 +4,38 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 
 @Composable
 fun FullscreenPlayerScreen(
     videoUrl: String,
+    navController: NavController,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
     val activity = LocalContext.current as Activity
 
+    // Preparar video
+    LaunchedEffect(videoUrl) {
+        viewModel.setMedia(videoUrl)
+    }
+
+    // Forzar landscape mientras esté aquí
     DisposableEffect(Unit) {
         activity.requestedOrientation =
             ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+
         onDispose {
             activity.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -31,5 +47,17 @@ fun FullscreenPlayerScreen(
             player = viewModel.player,
             modifier = Modifier.fillMaxSize()
         )
+
+        // Botón para salir de fullscreen
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Exit fullscreen"
+            )
+        }
     }
 }
+

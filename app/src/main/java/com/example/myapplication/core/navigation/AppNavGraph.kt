@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.screen.catalog.CatalogScreen
 import com.example.myapplication.screen.detail.DetailScreen
+import com.example.myapplication.screen.player.FullscreenPlayerScreen
 
 @Composable
 fun AppNavGraph() {
@@ -19,27 +20,47 @@ fun AppNavGraph() {
         startDestination = Routes.CATALOG
     ) {
 
+        // 1️⃣ CATALOG
         composable(Routes.CATALOG) {
             CatalogScreen(
                 onVideoClick = { videoUrl ->
-                    val encodedUrl = Uri.encode(videoUrl)
-                    navController.navigate("${Routes.DETAIL}/$encodedUrl")
+                    navController.navigate(
+                        "${Routes.DETAIL}/${Uri.encode(videoUrl)}"
+                    )
                 }
             )
         }
 
+        // 2️⃣ DETAIL
         composable(
             route = "${Routes.DETAIL}/{videoUrl}",
             arguments = listOf(
                 navArgument("videoUrl") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val videoUrl = backStackEntry.arguments?.getString("videoUrl")!!
+            val videoUrl =
+                Uri.decode(backStackEntry.arguments!!.getString("videoUrl")!!)
+
             DetailScreen(
-                videoUrl = Uri.decode(videoUrl),
+                videoUrl = videoUrl,
+                navController = navController
+            )
+        }
+
+        // 3️⃣ FULLSCREEN
+        composable(
+            route = "${Routes.FULLSCREEN}/{videoUrl}",
+            arguments = listOf(
+                navArgument("videoUrl") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val videoUrl =
+                Uri.decode(backStackEntry.arguments!!.getString("videoUrl")!!)
+
+            FullscreenPlayerScreen(
+                videoUrl = videoUrl,
                 navController = navController
             )
         }
     }
-
 }
