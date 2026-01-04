@@ -1,33 +1,26 @@
 package com.example.myapplication.screen.player
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.content.Context
+import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    application: Application
-) : AndroidViewModel(application) {
+    @ApplicationContext private val context: Context
+) : ViewModel() {
 
-    private val context = getApplication<Application>()
-
-    val player: ExoPlayer by lazy {
-        ExoPlayer.Builder(context).build().apply {
-            playWhenReady = true
-        }
-    }
+    val player: ExoPlayer = ExoPlayer.Builder(context).build()
 
     fun setMedia(url: String) {
-        val mediaItem = MediaItem.fromUri(url)
-        player.setMediaItem(mediaItem)
+        player.setMediaItem(MediaItem.fromUri(url))
         player.prepare()
     }
 
     override fun onCleared() {
-        super.onCleared()
         player.release()
     }
 }

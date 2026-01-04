@@ -35,7 +35,10 @@ fun AppNavGraph() {
             )
         ) { backStackEntry ->
             val videoUrl = backStackEntry.arguments?.getString("videoUrl")!!
-            DetailScreen(videoUrl = Uri.decode(videoUrl))
+            DetailScreen(
+                videoUrl = Uri.decode(videoUrl),
+                navController = navController
+            )
         }
     }
 
