@@ -12,6 +12,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myapplication.screen.player.PlayerViewModel
 import com.example.myapplication.screen.player.VideoPlayer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material3.Icon
 
 @Composable
 fun DetailScreen(
