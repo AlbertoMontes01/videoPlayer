@@ -21,15 +21,13 @@ fun AppNavGraph() {
     ) {
 
         // CATALOG
+        // CATALOG
         composable(Routes.CATALOG) {
             CatalogScreen(
-                onVideoClick = { videoUrl ->
-                    navController.navigate(
-                        "${Routes.DETAIL}/${Uri.encode(videoUrl)}"
-                    )
-                }
+                navController = navController
             )
         }
+
 
         // DETAIL
         composable(

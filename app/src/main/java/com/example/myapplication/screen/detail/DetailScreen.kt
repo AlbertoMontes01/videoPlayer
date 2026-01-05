@@ -15,6 +15,7 @@ import com.example.myapplication.screen.player.VideoPlayer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material3.Icon
+import com.example.myapplication.core.navigation.Routes
 
 @Composable
 fun DetailScreen(
@@ -24,6 +25,7 @@ fun DetailScreen(
 ) {
     LaunchedEffect(videoUrl) {
         viewModel.setMedia(videoUrl)
+        viewModel.restorePosition()
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -37,13 +39,13 @@ fun DetailScreen(
 
         IconButton(
             onClick = {
-                navController.navigate("fullscreen/${Uri.encode(videoUrl)}")
+                viewModel.savePosition()
+                navController.navigate(
+                    "${Routes.FULLSCREEN}/${Uri.encode(videoUrl)}"
+                )
             }
         ) {
-            Icon(
-                imageVector = Icons.Default.Fullscreen,
-                contentDescription = "Fullscreen"
-            )
+            Icon(Icons.Default.Fullscreen, contentDescription = "Fullscreen")
         }
 
         Text(
@@ -52,4 +54,3 @@ fun DetailScreen(
         )
     }
 }
-

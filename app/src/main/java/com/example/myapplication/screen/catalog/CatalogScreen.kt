@@ -1,5 +1,6 @@
 package com.example.myapplication.screen.catalog
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,11 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.myapplication.domain.model.Video
+import com.example.myapplication.screen.player.PlayerViewModel
 
 @Composable
 fun CatalogScreen(
-    onVideoClick: (String) -> Unit
+    navController: NavController,
+    viewModel: PlayerViewModel = hiltViewModel()
 ) {
     val videos = listOf(
         Video(
@@ -37,7 +42,12 @@ fun CatalogScreen(
                 text = video.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onVideoClick(video.url) }
+                    .clickable {
+                        viewModel.setMedia(video.url)
+                        navController.navigate(
+                            "detail/${Uri.encode(video.url)}"
+                        )
+                    }
                     .padding(16.dp)
             )
         }

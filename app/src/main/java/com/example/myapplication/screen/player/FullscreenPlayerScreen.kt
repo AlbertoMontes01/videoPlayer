@@ -26,16 +26,14 @@ fun FullscreenPlayerScreen(
 ) {
     val activity = LocalContext.current as Activity
 
-    // Preparar video
     LaunchedEffect(videoUrl) {
         viewModel.setMedia(videoUrl)
+        viewModel.restorePosition()
     }
 
-    // Forzar landscape mientras esté aquí
     DisposableEffect(Unit) {
         activity.requestedOrientation =
             ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
         onDispose {
             activity.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -48,15 +46,14 @@ fun FullscreenPlayerScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Botón para salir de fullscreen
         IconButton(
-            onClick = { navController.popBackStack() },
+            onClick = {
+                viewModel.savePosition()
+                navController.popBackStack()
+            },
             modifier = Modifier.padding(16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "Exit fullscreen"
-            )
+            Icon(Icons.Default.Close, contentDescription = "Exit fullscreen")
         }
     }
 }

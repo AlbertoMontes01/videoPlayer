@@ -10,13 +10,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext context: Context
 ) : ViewModel() {
 
-    val player: ExoPlayer = ExoPlayer.Builder(context).build()
+    val player = ExoPlayer.Builder(context).build()
 
-    private var lastPosition: Long = 0L
     private var currentUrl: String? = null
+    private var lastPosition: Long = 0L
 
     fun setMedia(url: String) {
         if (currentUrl == url && player.mediaItemCount > 0) return
@@ -39,4 +39,3 @@ class PlayerViewModel @Inject constructor(
         player.release()
     }
 }
-
