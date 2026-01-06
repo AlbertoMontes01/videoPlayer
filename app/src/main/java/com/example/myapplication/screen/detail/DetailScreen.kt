@@ -24,7 +24,7 @@ fun DetailScreen(
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
     LaunchedEffect(videoUrl) {
-        viewModel.setMedia(videoUrl)
+        viewModel.setMediaIfNeeded(videoUrl)
         viewModel.restorePosition()
     }
 

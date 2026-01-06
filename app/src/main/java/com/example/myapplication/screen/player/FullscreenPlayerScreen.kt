@@ -27,7 +27,6 @@ fun FullscreenPlayerScreen(
     val activity = LocalContext.current as Activity
 
     LaunchedEffect(videoUrl) {
-        viewModel.setMedia(videoUrl)
         viewModel.restorePosition()
     }
 

@@ -43,7 +43,7 @@ fun CatalogScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        viewModel.setMedia(video.url)
+                        viewModel.setMediaIfNeeded(video.url)
                         navController.navigate(
                             "detail/${Uri.encode(video.url)}"
                         )

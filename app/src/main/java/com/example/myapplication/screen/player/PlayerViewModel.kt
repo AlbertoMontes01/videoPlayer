@@ -18,7 +18,7 @@ class PlayerViewModel @Inject constructor(
     private var currentUrl: String? = null
     private var lastPosition: Long = 0L
 
-    fun setMedia(url: String) {
+    fun setMediaIfNeeded(url: String) {
         if (currentUrl == url && player.mediaItemCount > 0) return
 
         currentUrl = url
@@ -32,10 +32,13 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun restorePosition() {
-        player.seekTo(lastPosition)
+        if (lastPosition > 0) {
+            player.seekTo(lastPosition)
+        }
     }
 
     override fun onCleared() {
         player.release()
     }
 }
+
