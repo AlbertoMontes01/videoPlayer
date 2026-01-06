@@ -1,5 +1,7 @@
 package com.example.myapplication.screen.detail
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.IconButton
@@ -13,8 +15,15 @@ import androidx.navigation.NavController
 import com.example.myapplication.screen.player.PlayerViewModel
 import com.example.myapplication.screen.player.VideoPlayer
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.core.navigation.Routes
 
 @Composable
@@ -23,34 +32,69 @@ fun DetailScreen(
     navController: NavController,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
+    val activity = LocalContext.current as Activity
+    var isFullscreen by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(videoUrl) {
         viewModel.setMediaIfNeeded(videoUrl)
-        viewModel.restorePosition()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    DisposableEffect(isFullscreen) {
+        activity.requestedOrientation =
+            if (isFullscreen)
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            else
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+
+        onDispose {
+            activity.requestedOrientation =
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
         VideoPlayer(
             player = viewModel.player,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
+            modifier = if (isFullscreen) {
+                Modifier.fillMaxSize()
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+            }
         )
 
-        IconButton(
-            onClick = {
-                viewModel.savePosition()
-                navController.navigate(
-                    "${Routes.FULLSCREEN}/${Uri.encode(videoUrl)}"
+        if (isFullscreen != true) {
+            IconButton(
+                onClick = {
+                    isFullscreen = true
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Fullscreen,
+                    contentDescription = "Fullscreen"
                 )
             }
-        ) {
-            Icon(Icons.Default.Fullscreen, contentDescription = "Fullscreen")
-        }
 
-        Text(
-            text = "Descripción del video",
-            modifier = Modifier.padding(16.dp)
-        )
+            Text(
+                text = "Descripción del video",
+                modifier = Modifier.padding(16.dp)
+            )
+        } else {
+            IconButton(
+                onClick = {
+                    isFullscreen = false
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Exit fullscreen"
+                )
+            }
+        }
     }
 }

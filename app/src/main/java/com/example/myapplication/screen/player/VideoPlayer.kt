@@ -19,6 +19,12 @@ fun VideoPlayer(
         factory = { context ->
             PlayerView(context).apply {
                 this.player = player
+                useController = true
+            }
+        },
+        update = { playerView ->
+            if (playerView.player != player) {
+                playerView.player = player
             }
         }
     )
