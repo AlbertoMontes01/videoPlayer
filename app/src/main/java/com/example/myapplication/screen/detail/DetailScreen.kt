@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.core.navigation.Routes
 
+import androidx.activity.compose.BackHandler
+
 @Composable
 fun DetailScreen(
     videoUrl: String,
@@ -37,6 +39,10 @@ fun DetailScreen(
 
     LaunchedEffect(videoUrl) {
         viewModel.setMediaIfNeeded(videoUrl)
+    }
+
+    BackHandler(enabled = isFullscreen) {
+        isFullscreen = false
     }
 
     DisposableEffect(isFullscreen) {
@@ -52,9 +58,7 @@ fun DetailScreen(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
 
         VideoPlayer(
             player = viewModel.player,
@@ -67,16 +71,11 @@ fun DetailScreen(
             }
         )
 
-        if (isFullscreen != true) {
+        if (!isFullscreen) {
             IconButton(
-                onClick = {
-                    isFullscreen = true
-                }
+                onClick = { isFullscreen = true }
             ) {
-                Icon(
-                    imageVector = Icons.Default.Fullscreen,
-                    contentDescription = "Fullscreen"
-                )
+                Icon(Icons.Default.Fullscreen, contentDescription = "Fullscreen")
             }
 
             Text(
@@ -85,15 +84,10 @@ fun DetailScreen(
             )
         } else {
             IconButton(
-                onClick = {
-                    isFullscreen = false
-                },
+                onClick = { isFullscreen = false },
                 modifier = Modifier.padding(16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Exit fullscreen"
-                )
+                Icon(Icons.Default.Close, contentDescription = "Exit fullscreen")
             }
         }
     }
