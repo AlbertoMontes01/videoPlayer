@@ -25,8 +25,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.core.navigation.Routes
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.activity.compose.BackHandler
+import com.example.myapplication.MainActivity
 
 @Composable
 fun DetailScreen(
@@ -34,8 +40,38 @@ fun DetailScreen(
     navController: NavController,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
-    val activity = LocalContext.current as Activity
     var isFullscreen by rememberSaveable { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val activity = context as? MainActivity
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_PAUSE) {
+                activity?.let {
+                    if (!it.isInPictureInPictureMode) {
+                        it.enterPipMode()
+                    }
+                }
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (!activity?.isInPictureInPictureMode!!) {
+                viewModel.player.pause()
+                viewModel.player.clearMediaItems()
+            }
+        }
+    }
 
     LaunchedEffect(videoUrl) {
         viewModel.setMediaIfNeeded(videoUrl)
@@ -46,14 +82,14 @@ fun DetailScreen(
     }
 
     DisposableEffect(isFullscreen) {
-        activity.requestedOrientation =
+        activity?.requestedOrientation =
             if (isFullscreen)
                 ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             else
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         onDispose {
-            activity.requestedOrientation =
+            activity?.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
